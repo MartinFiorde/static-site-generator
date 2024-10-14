@@ -1,9 +1,10 @@
-from textnode import TextNode
+from models.textnode import TextNode
 
 
 def main():
     item = TextNode("This is a text node", "bold", "https://www.boot.dev")
-    print(repr(item))
+    print(f"str: {str(item)}")
+    print(f"repr: {repr(item)}")
 
 
 if __name__ == "__main__":

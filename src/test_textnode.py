@@ -1,7 +1,7 @@
 import unittest
 import copy
 
-from textnode import TextNode
+from models.textnode import TextNode
 
 
 class TestTextNode(unittest.TestCase):
@@ -19,6 +19,11 @@ class TestTextNode(unittest.TestCase):
 
     def test_repr(self):
         expected = "TextNode(text='This is a text node', text_type='bold', url=None)"
+        result = repr(self.base_text_node_without_url)
+        self.assertEqual(result, expected)
+        
+    def test_str(self):
+        expected = "<This is a text node bold None>"
         result = str(self.base_text_node_without_url)
         self.assertEqual(result, expected)
         
