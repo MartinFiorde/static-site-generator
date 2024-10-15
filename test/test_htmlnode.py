@@ -1,6 +1,6 @@
 import unittest
 
-from models.htmlnode import HTMLNode
+from src.models.htmlnode import HTMLNode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -43,7 +43,7 @@ class TestHTMLNode(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_str(self):
-        expected = '<div class="greeting" href="https://boot.dev">Hello, world!</div>'
+        expected = '<Hello, world! - div>'
         result = str(self.base_HTML_node_without_childs)
         self.assertEqual(result, expected)
 
