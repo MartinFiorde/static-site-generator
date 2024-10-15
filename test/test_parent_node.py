@@ -1,7 +1,7 @@
 import unittest
 
-from src.models.parentnode import ParentNode
-from src.models.leafnode import LeafNode
+from models.parent_node import ParentNode
+from models.leaf_node import LeafNode
 
 
 class TestParentNode(unittest.TestCase):
