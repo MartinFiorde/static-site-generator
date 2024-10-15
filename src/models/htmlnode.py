@@ -30,4 +30,4 @@ class HTMLNode:
         return f"HTMLNode(tag={self.tag!r}, value={self.value!r}, children={self.children!r}, props={self.props!r})"
 
     def __str__(self):
-        return f"<{self.value} - {self.tag}>"
+        return f"<{self.tag} - {self.value}>"

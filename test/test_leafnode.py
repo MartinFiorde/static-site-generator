@@ -37,7 +37,7 @@ class TestLeafNode(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_str(self):
-        expected = "<Hello, world! - a>"
+        expected = "<a - Hello, world!>"
         result = str(self.base_node)
         self.assertEqual(result, expected)
 

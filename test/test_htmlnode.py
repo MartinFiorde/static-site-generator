@@ -43,7 +43,7 @@ class TestHTMLNode(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_str(self):
-        expected = '<Hello, world! - div>'
+        expected = '<div - Hello, world!>'
         result = str(self.base_HTML_node_without_childs)
         self.assertEqual(result, expected)
 

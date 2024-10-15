@@ -8,14 +8,14 @@ class LeafNode(HTMLNode):
     def to_html(self):
         raise NotImplementedError("to_html method not implemented")
 
-    def to_html(self):
+    def to_html(self, tab=0):
         if self.value == None:
             raise ValueError("All leaf nodes must have a value")
         
         if self.tag == None:
-            return self.value
+            return f"{'    '*tab}{self.value}"
         
-        return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
+        return f"{'    '*tab}<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
 
 
     def __eq__(self, other):
