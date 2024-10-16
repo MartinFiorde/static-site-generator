@@ -1,4 +1,4 @@
-from models.html_node import HTMLNode
+from src.models.html_node import HTMLNode
 
 class ParentNode(HTMLNode):
     def __init__(self, tag, children, props=None):
