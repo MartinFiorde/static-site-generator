@@ -5,9 +5,6 @@ class ParentNode(HTMLNode):
         super().__init__(tag, None, children, props)
 
 
-    def to_html(self):
-        raise NotImplementedError("to_html method not implemented")
-
     def to_html(self, tab=0):
         if self.children == None or len(self.children) == 0:
             raise ValueError("All leaf nodes must have at least one children")
@@ -21,8 +18,6 @@ class ParentNode(HTMLNode):
         full_node += f"\n{'    '*tab}</{self.tag}>"
         return full_node
         
-        
-
 
     def __eq__(self, other):
         if isinstance(other, HTMLNode):
