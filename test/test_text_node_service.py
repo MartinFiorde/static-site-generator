@@ -42,6 +42,28 @@ class TestTextNodeService(unittest.TestCase):
         result = split_nodes_delimiter(base, "**", TextType.BOLD)
         self.assertEqual(result, expected)
 
+    def test_split_nodes_delimiter_bold_double(self):
+        base = "**bold**, follow by normal again, follow by **extra bold again**"
+        expected = [
+            TextNode("bold", TextType.BOLD),
+            TextNode(", follow by normal again, follow by ", TextType.TEXT),
+            TextNode("extra bold again", TextType.BOLD),
+        ]
+        result = split_nodes_delimiter(base, "**", TextType.BOLD)
+        self.assertEqual(result, expected)
+
+    def test_split_nodes_delimiter_bold_triple(self):
+        base = "**bold**, follow by normal again, follow by **extra bold again** and **bold a third time**"
+        expected = [
+            TextNode("bold", TextType.BOLD),
+            TextNode(", follow by normal again, follow by ", TextType.TEXT),
+            TextNode("extra bold again", TextType.BOLD),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("bold a third time", TextType.BOLD),
+        ]
+        result = split_nodes_delimiter(base, "**", TextType.BOLD)
+        self.assertEqual(result, expected)
+
     def test_split_nodes_delimiter_italic_middle(self):
         base = "This is normal text, follow by *italic*, follow by normal again"
         expected = [
@@ -72,6 +94,25 @@ class TestTextNodeService(unittest.TestCase):
                 "https://www.markdownguide.org",
             ),
             TextNode(", follow by normal again", TextType.TEXT),
+        ]
+        result = split_nodes_delimiter(base, None, TextType.LINK)
+        self.assertEqual(result, expected)
+
+    def test_split_nodes_delimiter_link_double(self):
+        base = "This is normal text, follow by [an internal link](https://www.markdownguide.org), follow by normal again, follow by [an internal link again](https://www.markdownguide.org)"
+        expected = [
+            TextNode("This is normal text, follow by ", TextType.TEXT),
+            TextNode(
+                "an internal link",
+                TextType.LINK,
+                "https://www.markdownguide.org",
+            ),
+            TextNode(", follow by normal again, follow by ", TextType.TEXT),
+            TextNode(
+                "an internal link again",
+                TextType.LINK,
+                "https://www.markdownguide.org",
+            ),
         ]
         result = split_nodes_delimiter(base, None, TextType.LINK)
         self.assertEqual(result, expected)
