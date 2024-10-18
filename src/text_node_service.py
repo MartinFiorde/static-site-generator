@@ -3,6 +3,23 @@ import re
 from src.models.text_node import TextNode, TextType
 
 
+def text_to_textnodes(text):
+    nodes = split_nodes_delimiter(text, "**", TextType.BOLD)
+    nodes = nodes[:-1] + split_nodes_delimiter(
+        nodes[len(nodes) - 1].text, "*", TextType.ITALIC
+    )
+    nodes = nodes[:-1] + split_nodes_delimiter(
+        nodes[len(nodes) - 1].text, "`", TextType.CODE
+    )
+    nodes = nodes[:-1] + split_nodes_delimiter(
+        nodes[len(nodes) - 1].text, None, TextType.IMAGE
+    )
+    nodes = nodes[:-1] + split_nodes_delimiter(
+        nodes[len(nodes) - 1].text, None, TextType.LINK
+    )
+    return nodes
+
+
 def split_nodes_delimiter(old_nodes, delimiter, text_type) -> list[TextNode]:
     if text_type == TextType.LINK:
         return link_procesor(old_nodes)
@@ -28,11 +45,11 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type) -> list[TextNode]:
 
 
 def link_procesor(old_nodes) -> list[TextNode]:
-    parts = re.split(r"\[.*?\]\(.*?\)", old_nodes, 1)
-    
+    parts = re.split(r"\[.*?\]\([^\)]+\)", old_nodes, 1)
+
     if len(parts) != 2:
         return [TextNode(old_nodes, TextType.TEXT)]
-    
+
     head = parts[0]
     tail = parts[1]
     result: list = []
@@ -52,8 +69,8 @@ def link_procesor(old_nodes) -> list[TextNode]:
 
 
 def image_procesor(old_nodes) -> list[TextNode]:
-    parts = re.split(r"\!\[.*?\]\(.*?\)", old_nodes, 1)
-    
+    parts = re.split(r"!\[.*?\]\([^\)]+\)", old_nodes, 1)
+
     if len(parts) != 2:
         return [TextNode(old_nodes, TextType.TEXT)]
 
@@ -70,6 +87,6 @@ def image_procesor(old_nodes) -> list[TextNode]:
     result.append(TextNode(text.group(1), TextType.IMAGE, url.group(1)))
 
     if tail != "":
-        result = result + split_nodes_delimiter(tail, None, TextType.LINK)
+        result = result + split_nodes_delimiter(tail, None, TextType.IMAGE)
 
     return result
