@@ -62,6 +62,34 @@ class TestTextNodeService(unittest.TestCase):
         result = split_nodes_delimiter(base, "`", TextType.CODE)
         self.assertEqual(result, expected)
 
+    def test_split_nodes_delimiter_link_middle(self):
+        base = "This is normal text, follow by [an internal link](https://www.markdownguide.org), follow by normal again"
+        expected = [
+            TextNode("This is normal text, follow by ", TextType.TEXT),
+            TextNode(
+                "an internal link",
+                TextType.LINK,
+                "https://www.markdownguide.org",
+            ),
+            TextNode(", follow by normal again", TextType.TEXT),
+        ]
+        result = split_nodes_delimiter(base, None, TextType.LINK)
+        self.assertEqual(result, expected)
+
+    def test_split_nodes_delimiter_image_middle(self):
+        base = "This is normal text, follow by ![an image with alt text](https://www.markdownguide.org/assets/images/tux.png), follow by normal again"
+        expected = [
+            TextNode("This is normal text, follow by ", TextType.TEXT),
+            TextNode(
+                "an image with alt text",
+                TextType.IMAGE,
+                "https://www.markdownguide.org/assets/images/tux.png",
+            ),
+            TextNode(", follow by normal again", TextType.TEXT),
+        ]
+        result = split_nodes_delimiter(base, None, TextType.IMAGE)
+        self.assertEqual(result, expected)
+
 
 if __name__ == "__main__":
     unittest.main()
