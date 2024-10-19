@@ -77,7 +77,7 @@ class TestParentNode(unittest.TestCase):
 </div>"""
         result = self.node_with_extra_parent.to_html()
         self.assertEqual(result, expected)
-        
+
     def test_to_html_3(self):
         expected = """\
 <div>

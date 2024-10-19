@@ -11,7 +11,6 @@ class TestHTMLNode(unittest.TestCase):
         {"class": "greeting", "href": "https://boot.dev"},
     )
 
-
     def test_props_to_html(self):
         expected = ' class="greeting" href="https://boot.dev"'
         result = self.base_HTML_node_without_childs.props_to_html()
@@ -25,7 +24,6 @@ class TestHTMLNode(unittest.TestCase):
         self.assertEqual(
             result.props, {"class": "greeting", "href": "https://boot.dev"}
         )
-
 
     def test_eq(self):
         expected = self.base_HTML_node_without_childs
@@ -43,7 +41,7 @@ class TestHTMLNode(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_str(self):
-        expected = '<div - Hello, world!>'
+        expected = "<div - Hello, world!>"
         result = str(self.base_HTML_node_without_childs)
         self.assertEqual(result, expected)
 

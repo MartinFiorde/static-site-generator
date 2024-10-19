@@ -15,23 +15,46 @@ class TestLeafNode(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_text_node_to_html_node(self):
-        expected = LeafNode(tag=None, value='Simple text without tag', props={})
-        result = LeafNode.text_node_to_html_node(TextNode("Simple text without tag", TextType.TEXT))
+        expected = LeafNode(tag=None, value="Simple text without tag", props={})
+        result = LeafNode.text_node_to_html_node(
+            TextNode("Simple text without tag", TextType.TEXT)
+        )
         self.assertEqual(result, expected)
-        expected = LeafNode(tag='b', value='Bold text', props={})
+        expected = LeafNode(tag="b", value="Bold text", props={})
         result = LeafNode.text_node_to_html_node(TextNode("Bold text", TextType.BOLD))
         self.assertEqual(result, expected)
-        expected = LeafNode(tag='i', value='Italic text', props={})
-        result = LeafNode.text_node_to_html_node(TextNode("Italic text", TextType.ITALIC))
+        expected = LeafNode(tag="i", value="Italic text", props={})
+        result = LeafNode.text_node_to_html_node(
+            TextNode("Italic text", TextType.ITALIC)
+        )
         self.assertEqual(result, expected)
-        expected = LeafNode(tag='code', value='code example', props={})
-        result = LeafNode.text_node_to_html_node(TextNode("code example", TextType.CODE))
+        expected = LeafNode(tag="code", value="code example", props={})
+        result = LeafNode.text_node_to_html_node(
+            TextNode("code example", TextType.CODE)
+        )
         self.assertEqual(result, expected)
-        expected = LeafNode(tag='a', value='link to something', props={'href': 'https://boot.dev'})
-        result = LeafNode.text_node_to_html_node(TextNode("link to something", TextType.LINK, "https://boot.dev"))
+        expected = LeafNode(
+            tag="a", value="link to something", props={"href": "https://boot.dev"}
+        )
+        result = LeafNode.text_node_to_html_node(
+            TextNode("link to something", TextType.LINK, "https://boot.dev")
+        )
         self.assertEqual(result, expected)
-        expected = LeafNode(tag='img', value='', props={'src': 'https://www.boot.dev/img/bootdev-logo-full-small.webp', 'alt': 'Boot.dev'})
-        result = LeafNode.text_node_to_html_node(TextNode("Boot.dev", TextType.IMAGE, "https://www.boot.dev/img/bootdev-logo-full-small.webp"))
+        expected = LeafNode(
+            tag="img",
+            value="",
+            props={
+                "src": "https://www.boot.dev/img/bootdev-logo-full-small.webp",
+                "alt": "Boot.dev",
+            },
+        )
+        result = LeafNode.text_node_to_html_node(
+            TextNode(
+                "Boot.dev",
+                TextType.IMAGE,
+                "https://www.boot.dev/img/bootdev-logo-full-small.webp",
+            )
+        )
         self.assertEqual(result, expected)
 
     def test_values(self):
