@@ -6,55 +6,110 @@ from src.text_node_service import *
 
 class TestTextNodeService(unittest.TestCase):
 
+    # pick_delimiter() tests
+
+    def test_pick_delimiter(self):
+        self.assertEqual(pick_delimiter(TextType.BOLD), "**")
+        self.assertEqual(pick_delimiter(TextType.ITALIC), "*")
+        self.assertEqual(pick_delimiter(TextType.CODE), "`")
+
+        self.assertIsNone(pick_delimiter(TextType.TEXT))
+        self.assertIsNone(pick_delimiter(TextType.LINK))
+        self.assertIsNone(pick_delimiter(TextType.IMAGE))
+        self.assertIsNone(pick_delimiter(None))
+        self.assertIsNone(pick_delimiter("invalid data type"))
+
+    # nodify() tests
+
+    def test_nodify_with_string(self):
+        base = "this is a normal string"
+        expected = [TextNode("this is a normal string", TextType.TEXT)]
+        result = nodify(base)
+        self.assertEqual(result, expected)
+
+    def test_nodify_with_empty_string(self):
+        base = ""
+        expected = []
+        result = nodify(base)
+        self.assertEqual(result, expected)
+
+    def test_nodify_raises_type_error_with_none(self):
+        base = None
+        expected = "TypeError('Parameter must be a valid string.')"
+        with self.assertRaises(Exception) as context:
+            nodify(base)
+        self.assertEqual(repr(context.exception), expected)
+
+    def test_nodify_raises_type_error_with_invalid_type(self):
+        base = 3
+        expected = "TypeError('Parameter must be a valid string.')"
+        with self.assertRaises(Exception) as context:
+            nodify(base)
+        self.assertEqual(repr(context.exception), expected)
+
+    # split_nodes_delimiter() tests
+
+    def test_split_nodes_delimiter_raises_Exception_with_bold_invalid(self):
+        base = nodify("**bold")
+        expected = (
+            "Exception('Invalid Markdown syntax, one closing delimiter is missing.')"
+        )
+        with self.assertRaises(Exception) as context:
+            split_nodes_delimiter(base, TextType.BOLD)
+        self.assertEqual(repr(context.exception), expected)
+
     def test_split_nodes_delimiter_bold_all(self):
-        base = "**bold**"
+        base = nodify("**bold**")
         expected = [
             TextNode("bold", TextType.BOLD),
         ]
-        result = split_nodes_delimiter(base, "**", TextType.BOLD)
+        result = split_nodes_delimiter(base, TextType.BOLD)
         self.assertEqual(result, expected)
-        
-'''
+
     def test_split_nodes_delimiter_bold_first(self):
-        base = "**bold**, follow by normal again"
+        base = nodify("**bold**, follow by normal again")
         expected = [
             TextNode("bold", TextType.BOLD),
             TextNode(", follow by normal again", TextType.TEXT),
         ]
-        result = split_nodes_delimiter(base, "**", TextType.BOLD)
+        result = split_nodes_delimiter(base, TextType.BOLD)
         self.assertEqual(result, expected)
 
     def test_split_nodes_delimiter_bold_middle(self):
-        base = "This is normal text, follow by **bold**, follow by normal again"
+        base = nodify("This is normal text, follow by **bold**, follow by normal again")
         expected = [
             TextNode("This is normal text, follow by ", TextType.TEXT),
             TextNode("bold", TextType.BOLD),
             TextNode(", follow by normal again", TextType.TEXT),
         ]
-        result = split_nodes_delimiter(base, "**", TextType.BOLD)
+        result = split_nodes_delimiter(base, TextType.BOLD)
         self.assertEqual(result, expected)
 
     def test_split_nodes_delimiter_bold_last(self):
-        base = "This is normal text, follow by **bold**"
+        base = nodify("This is normal text, follow by **bold**")
         expected = [
             TextNode("This is normal text, follow by ", TextType.TEXT),
             TextNode("bold", TextType.BOLD),
         ]
-        result = split_nodes_delimiter(base, "**", TextType.BOLD)
+        result = split_nodes_delimiter(base, TextType.BOLD)
         self.assertEqual(result, expected)
 
     def test_split_nodes_delimiter_bold_double(self):
-        base = "**bold**, follow by normal again, follow by **extra bold again**"
+        base = nodify(
+            "**bold**, follow by normal again, follow by **extra bold again**"
+        )
         expected = [
             TextNode("bold", TextType.BOLD),
             TextNode(", follow by normal again, follow by ", TextType.TEXT),
             TextNode("extra bold again", TextType.BOLD),
         ]
-        result = split_nodes_delimiter(base, "**", TextType.BOLD)
+        result = split_nodes_delimiter(base, TextType.BOLD)
         self.assertEqual(result, expected)
 
     def test_split_nodes_delimiter_bold_triple(self):
-        base = "**bold**, follow by normal again, follow by **extra bold again** and **bold a third time**"
+        base = nodify(
+            "**bold**, follow by normal again, follow by **extra bold again** and **bold a third time**"
+        )
         expected = [
             TextNode("bold", TextType.BOLD),
             TextNode(", follow by normal again, follow by ", TextType.TEXT),
@@ -62,29 +117,74 @@ class TestTextNodeService(unittest.TestCase):
             TextNode(" and ", TextType.TEXT),
             TextNode("bold a third time", TextType.BOLD),
         ]
-        result = split_nodes_delimiter(base, "**", TextType.BOLD)
+        result = split_nodes_delimiter(base, TextType.BOLD)
         self.assertEqual(result, expected)
 
     def test_split_nodes_delimiter_italic_middle(self):
-        base = "This is normal text, follow by *italic*, follow by normal again"
+        base = nodify("This is normal text, follow by *italic*, follow by normal again")
         expected = [
             TextNode("This is normal text, follow by ", TextType.TEXT),
             TextNode("italic", TextType.ITALIC),
             TextNode(", follow by normal again", TextType.TEXT),
         ]
-        result = split_nodes_delimiter(base, "*", TextType.ITALIC)
+        result = split_nodes_delimiter(base, TextType.ITALIC)
         self.assertEqual(result, expected)
 
     def test_split_nodes_delimiter_code_middle(self):
-        base = "This is normal text, follow by `code`, follow by normal again"
+        base = nodify("This is normal text, follow by `code`, follow by normal again")
         expected = [
             TextNode("This is normal text, follow by ", TextType.TEXT),
             TextNode("code", TextType.CODE),
             TextNode(", follow by normal again", TextType.TEXT),
         ]
-        result = split_nodes_delimiter(base, "`", TextType.CODE)
+        result = split_nodes_delimiter(base, TextType.CODE)
         self.assertEqual(result, expected)
 
+    def test_split_nodes_delimiter_with_normal_string(self):
+        base = nodify("This is a string without markdown content")
+        expected = [
+            TextNode("This is a string without markdown content", TextType.TEXT),
+        ]
+        result = split_nodes_delimiter(base, TextType.BOLD)
+        result = split_nodes_delimiter(result, TextType.ITALIC)
+        result = split_nodes_delimiter(result, TextType.CODE)
+        self.assertEqual(result, expected)
+
+    def test_split_nodes_delimiter_with_empty_string(self):
+        base = nodify("")
+        expected = []
+        result = split_nodes_delimiter(base, TextType.BOLD)
+        result = split_nodes_delimiter(result, TextType.ITALIC)
+        result = split_nodes_delimiter(result, TextType.CODE)
+        self.assertEqual(result, expected)
+
+    def test_text_to_textnodes_with_basic_node_types(self):
+        base = nodify(
+            "This is **text** with an *italic* word and a `code block` and repeat. This is **text** with an *italic* word and a `code block` again."
+        )
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" with an ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word and a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" and repeat. This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" with an ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word and a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" again.", TextType.TEXT),
+        ]
+
+        result = split_nodes_delimiter(base, TextType.BOLD)
+        result = split_nodes_delimiter(result, TextType.ITALIC)
+        result = split_nodes_delimiter(result, TextType.CODE)
+        self.assertEqual(result, expected)
+
+
+"""
     def test_split_nodes_delimiter_link_middle(self):
         base = "This is normal text, follow by [an internal link](https://www.markdownguide.org), follow by normal again"
         expected = [
@@ -157,7 +257,7 @@ class TestTextNodeService(unittest.TestCase):
 
         result = text_to_textnodes(base)
         self.assertEqual(result, expected)
-'''
+"""
 
 if __name__ == "__main__":
     unittest.main()

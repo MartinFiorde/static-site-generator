@@ -2,10 +2,52 @@ import re
 
 from src.models.text_node import TextNode, TextType
 
-def split_nodes_delimiter(old_nodes, delimiter, text_type) -> list[TextNode]:
-    pass
 
-'''
+def nodify(text: str):
+    if not isinstance(text, str):
+        raise TypeError("Parameter must be a valid string.")
+    if text == "":
+        return []
+    return [TextNode(text, TextType.TEXT)]
+
+
+def pick_delimiter(text_type):
+    if text_type == TextType.BOLD:
+        return "**"
+    if text_type == TextType.ITALIC:
+        return "*"
+    if text_type == TextType.CODE:
+        return "`"
+    return None
+
+
+def split_nodes_delimiter(text: str, text_type: TextType) -> list[TextNode]:
+    return split_nodes_delimiter(nodify(text), text_type)
+
+
+def split_nodes_delimiter(data: list[TextNode], text_type: TextType) -> list[TextNode]:
+    new_nodes = []
+    for old_node in data:
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
+            continue
+        delimiter = pick_delimiter(text_type)
+        segments = old_node.text.split(delimiter)
+        if len(segments) % 2 == 0:
+            raise Exception(
+                "Invalid Markdown syntax, one closing delimiter is missing."
+            )
+        for segment in segments:
+            if segment == "":
+                continue
+            if segments.index(segment) % 2 == 0:
+                new_nodes.append(TextNode(segment, TextType.TEXT))
+            else:
+                new_nodes.append(TextNode(segment, text_type))
+    return new_nodes
+
+
+"""
 def text_to_textnodes(text):
     nodes = split_nodes_delimiter(text, "**", TextType.BOLD)
     nodes = nodes[:-1] + split_nodes_delimiter(
@@ -93,4 +135,4 @@ def image_procesor(old_nodes) -> list[TextNode]:
         result = result + split_nodes_delimiter(tail, None, TextType.IMAGE)
 
     return result
-'''
+"""
