@@ -184,9 +184,8 @@ class TestTextNodeService(unittest.TestCase):
         self.assertEqual(result, expected)
 
 
-"""
     def test_split_nodes_delimiter_link_middle(self):
-        base = "This is normal text, follow by [an internal link](https://www.markdownguide.org), follow by normal again"
+        base = nodify("This is normal text, follow by [an internal link](https://www.markdownguide.org), follow by normal again")
         expected = [
             TextNode("This is normal text, follow by ", TextType.TEXT),
             TextNode(
@@ -196,11 +195,11 @@ class TestTextNodeService(unittest.TestCase):
             ),
             TextNode(", follow by normal again", TextType.TEXT),
         ]
-        result = split_nodes_delimiter(base, None, TextType.LINK)
+        result = split_nodes_with_url(base, TextType.LINK)
         self.assertEqual(result, expected)
 
     def test_split_nodes_delimiter_link_double(self):
-        base = "This is normal text, follow by [an internal link](https://www.markdownguide.org), follow by normal again, follow by [an internal link again](https://www.markdownguide.org)"
+        base = nodify("This is normal text, follow by [an internal link](https://www.markdownguide.org), follow by normal again, follow by [an internal link again](https://www.markdownguide.org)")
         expected = [
             TextNode("This is normal text, follow by ", TextType.TEXT),
             TextNode(
@@ -215,11 +214,11 @@ class TestTextNodeService(unittest.TestCase):
                 "https://www.markdownguide.org",
             ),
         ]
-        result = split_nodes_delimiter(base, None, TextType.LINK)
+        result = split_nodes_with_url(base, TextType.LINK)
         self.assertEqual(result, expected)
 
     def test_split_nodes_delimiter_image_middle(self):
-        base = "This is normal text, follow by ![an image with alt text](https://www.markdownguide.org/assets/images/tux.png), follow by normal again"
+        base = nodify("This is normal text, follow by ![an image with alt text](https://www.markdownguide.org/assets/images/tux.png), follow by normal again")
         expected = [
             TextNode("This is normal text, follow by ", TextType.TEXT),
             TextNode(
@@ -229,7 +228,7 @@ class TestTextNodeService(unittest.TestCase):
             ),
             TextNode(", follow by normal again", TextType.TEXT),
         ]
-        result = split_nodes_delimiter(base, None, TextType.IMAGE)
+        result = split_nodes_with_url(base, TextType.IMAGE)
         self.assertEqual(result, expected)
 
     def test_text_to_textnodes_with_all_node_types(self):
@@ -254,10 +253,33 @@ class TestTextNodeService(unittest.TestCase):
                 "https://boot.dev",
             ),
         ]
+        
+    def test_text_to_textnodes_with_all_node_types_2(self):
+        base = "This is a [link](https://boot.dev) with an *italic word* and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a `code block` and a **bold text**."
+        expected = [
+            TextNode("This is a ", TextType.TEXT),
+            TextNode(
+                "link",
+                TextType.LINK,
+                "https://boot.dev",
+            ),
+            TextNode(" with an ", TextType.TEXT),
+            TextNode("italic word", TextType.ITALIC),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode(
+                "obi wan image",
+                TextType.IMAGE,
+                "https://i.imgur.com/fJRm4Vk.jpeg",
+            ),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("bold text", TextType.BOLD),
+            TextNode(".", TextType.TEXT),
+        ]
 
         result = text_to_textnodes(base)
         self.assertEqual(result, expected)
-"""
 
 if __name__ == "__main__":
     unittest.main()

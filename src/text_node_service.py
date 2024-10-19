@@ -25,9 +25,11 @@ def split_nodes_delimiter(text: str, text_type: TextType) -> list[TextNode]:
     return split_nodes_delimiter(nodify(text), text_type)
 
 
-def split_nodes_delimiter(data: list[TextNode], text_type: TextType) -> list[TextNode]:
+def split_nodes_delimiter(
+    old_nodes: list[TextNode], text_type: TextType
+) -> list[TextNode]:
     new_nodes = []
-    for old_node in data:
+    for old_node in old_nodes:
         if old_node.text_type != TextType.TEXT:
             new_nodes.append(old_node)
             continue
@@ -47,48 +49,58 @@ def split_nodes_delimiter(data: list[TextNode], text_type: TextType) -> list[Tex
     return new_nodes
 
 
-"""
-def text_to_textnodes(text):
-    nodes = split_nodes_delimiter(text, "**", TextType.BOLD)
-    nodes = nodes[:-1] + split_nodes_delimiter(
-        nodes[len(nodes) - 1].text, "*", TextType.ITALIC
-    )
-    nodes = nodes[:-1] + split_nodes_delimiter(
-        nodes[len(nodes) - 1].text, "`", TextType.CODE
-    )
-    nodes = nodes[:-1] + split_nodes_delimiter(
-        nodes[len(nodes) - 1].text, None, TextType.IMAGE
-    )
-    nodes = nodes[:-1] + split_nodes_delimiter(
-        nodes[len(nodes) - 1].text, None, TextType.LINK
-    )
+def pattern_selector(text_type: TextType) -> str:
+    if text_type == TextType.LINK:
+        return r"(\[.*?\]\(.*?\))"
+    elif text_type == TextType.IMAGE:
+        return r"(!\[.*?\]\(.*?\))"
+    else:
+        raise TypeError("TextType invalid.")
+
+
+def split_nodes_with_url(
+    old_nodes: list[TextNode], text_type: TextType
+) -> list[TextNode]:
+    new_nodes = []
+    for old_node in old_nodes:
+        if old_node.text_type != TextType.TEXT:
+            new_nodes.append(old_node)
+            continue
+        pattern = pattern_selector(text_type)
+        segments = re.split(pattern, old_node.text)
+        # delimiter = pick_delimiter(text_type)
+        # segments = old_node.text.split(delimiter)
+        if len(segments) % 2 == 0:
+            raise Exception(
+                "Invalid Markdown syntax, one closing delimiter is missing."
+            )
+        for segment in segments:
+            if segment == "":
+                continue
+            if segments.index(segment) % 2 == 0:
+                new_nodes.append(TextNode(segment, TextType.TEXT))
+            else:
+                text = re.search(r"\[(.*?)\]", segment).group(1)
+                url = re.search(r"\((.*?)\)", segment).group(1)
+                new_nodes.append(TextNode(text, text_type, url))
+    return new_nodes
+
+
+def text_to_textnodes(text: str) -> list[TextNode]:
+    nodes = nodify(text)
+    nodes = split_nodes_delimiter(nodes, TextType.BOLD)
+    nodes = split_nodes_delimiter(nodes, TextType.ITALIC)
+    nodes = split_nodes_delimiter(nodes, TextType.CODE)
+    nodes = split_nodes_with_url(nodes, TextType.IMAGE)
+    nodes = split_nodes_with_url(nodes, TextType.LINK)
     return nodes
 
 
-def split_nodes_delimiter(old_nodes, delimiter, text_type) -> list[TextNode]:
-    if text_type == TextType.LINK:
-        return link_procesor(old_nodes)
-    if text_type == TextType.IMAGE:
-        return image_procesor(old_nodes)
-
-    items = old_nodes.split(delimiter, 2)
-
-    if len(items) != 3:
-        return [TextNode(old_nodes, TextType.TEXT)]
-
-    result: list = []
-    for item in items:
-        if item == "":
-            continue
-        if item == items[0]:
-            result.append(TextNode(item, TextType.TEXT))
-        if item == items[1]:
-            result.append(TextNode(item, text_type))
-        if item == items[2]:
-            result = result + split_nodes_delimiter(item, delimiter, text_type)
-    return result
+def extract_markdown_images(text):
+    pass
 
 
+"""
 def link_procesor(old_nodes) -> list[TextNode]:
     parts = re.split(r"\[.*?\]\([^\)]+\)", old_nodes, 1)
 
