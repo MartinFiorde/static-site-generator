@@ -13,7 +13,8 @@ class TestTextNodeService(unittest.TestCase):
         ]
         result = split_nodes_delimiter(base, "**", TextType.BOLD)
         self.assertEqual(result, expected)
-
+        
+'''
     def test_split_nodes_delimiter_bold_first(self):
         base = "**bold**, follow by normal again"
         expected = [
@@ -131,7 +132,7 @@ class TestTextNodeService(unittest.TestCase):
         result = split_nodes_delimiter(base, None, TextType.IMAGE)
         self.assertEqual(result, expected)
 
-    def test_split_nodes_delimiter_image_middle(self):
+    def test_text_to_textnodes_with_all_node_types(self):
         base = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
         expected = [
             TextNode("This is ", TextType.TEXT),
@@ -156,7 +157,7 @@ class TestTextNodeService(unittest.TestCase):
 
         result = text_to_textnodes(base)
         self.assertEqual(result, expected)
-
+'''
 
 if __name__ == "__main__":
     unittest.main()

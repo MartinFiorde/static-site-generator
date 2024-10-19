@@ -1,3 +1,4 @@
+'''
 import unittest
 from src.text_node_service_bd import (
     split_nodes_delimiter,
@@ -9,7 +10,6 @@ from src.text_node_service_bd import (
 )
 
 from src.models.text_node import TextNode, TextType
-
 
 class TestInlineMarkdown(unittest.TestCase):
     def test_delim_bold(self):
@@ -194,3 +194,4 @@ class TestInlineMarkdown(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+'''

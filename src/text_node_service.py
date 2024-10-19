@@ -2,7 +2,10 @@ import re
 
 from src.models.text_node import TextNode, TextType
 
+def split_nodes_delimiter(old_nodes, delimiter, text_type) -> list[TextNode]:
+    pass
 
+'''
 def text_to_textnodes(text):
     nodes = split_nodes_delimiter(text, "**", TextType.BOLD)
     nodes = nodes[:-1] + split_nodes_delimiter(
@@ -90,3 +93,4 @@ def image_procesor(old_nodes) -> list[TextNode]:
         result = result + split_nodes_delimiter(tail, None, TextType.IMAGE)
 
     return result
+'''
