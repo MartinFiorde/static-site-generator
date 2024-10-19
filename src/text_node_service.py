@@ -94,3 +94,70 @@ def text_to_textnodes(text: str) -> list[TextNode]:
     nodes = split_nodes_with_url(nodes, TextType.IMAGE)
     nodes = split_nodes_with_url(nodes, TextType.LINK)
     return nodes
+
+
+def markdown_to_blocks(markdown: str) -> list[str]:
+    nodes = []
+
+    temp_flag = None
+    temp_block = []
+    for segment in markdown.split("\n"):
+        line = segment.strip()
+
+        if temp_flag == "```":
+            temp_block.append(segment)
+            if line[:3] == "```":
+                temp_block[-1] = line
+                nodes.append("\n".join(temp_block))
+                temp_flag = None
+                temp_block = []
+            continue
+
+        if line == "":
+            continue
+
+        if temp_flag != None:
+            if temp_flag == line[: len(temp_flag)]:
+                temp_block.append(line)
+                continue
+
+            if re.match(r"^\d+\.\s", temp_flag) and re.match(r"^\d+\.\s", line):
+                temp_block.append(line)
+                continue
+
+            nodes.append("\n".join(temp_block))
+            temp_flag = None
+            temp_block = []
+
+        if re.match(r"^#{1,6} ", line):
+            nodes.append(line)
+            continue
+
+        if re.match(r"^\*\s", line):
+            temp_flag = "* "
+            temp_block.append(line)
+            continue
+
+        if re.match(r"^\-\s", line):
+            temp_flag = "- "
+            temp_block.append(line)
+            continue
+        
+        if re.match(r"^\>\s", line):
+            temp_flag = "> "
+            temp_block.append(line)
+            continue
+
+        if line == "```":
+            temp_flag = line
+            temp_block.append(line)
+            continue
+
+        nodes.append(line)
+
+    if len(temp_block) != 0:
+        if temp_flag == "```":
+            temp_block.append(temp_flag)
+        nodes.append("\n".join(temp_block))
+    
+    return nodes

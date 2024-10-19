@@ -75,6 +75,14 @@ These elements extend the basic syntax by adding additional features. Not all Ma
 }
 `
 
+```
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "age": 25
+}
+```
+
 ### Footnote
 
 Here's a sentence with a footnote. [^1]

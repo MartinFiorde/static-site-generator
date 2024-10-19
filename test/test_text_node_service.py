@@ -303,6 +303,169 @@ class TestTextNodeService(unittest.TestCase):
         result = text_to_textnodes(base)
         self.assertEqual(result, expected)
 
+    # markdown_to_blocks() tests
+
+    def test_markdown_to_blocks(self):
+        base = """\
+# This is a heading
+
+This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+* This is the first list item in a list block
+* This is a list item
+* This is another list item"""
+        expected = [
+            "# This is a heading",
+            "This is a paragraph of text. It has some **bold** and *italic* words inside of it.",
+            "* This is the first list item in a list block\n* This is a list item\n* This is another list item",
+        ]
+        result = markdown_to_blocks(base)
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_blocks_with_code_block(self):
+        base = """\
+```
+{
+  "firstName": "John",
+  "lastName": "Smith",
+         
+  "age": 25
+}
+```
+
+
+
+"""
+        expected = [
+            """\
+```
+{
+  "firstName": "John",
+  "lastName": "Smith",
+         
+  "age": 25
+}
+```""",
+        ]
+        result = markdown_to_blocks(base)
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_blocks_with_empty_code_block(self):
+        base = """\
+```
+
+"""
+        expected = ["```\n\n\n```"]
+        result = markdown_to_blocks(base)
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_blocks_with_code_block_not_closed(self):
+        base = """\
+```
+```"""
+        expected = ["```\n```"]
+        result = markdown_to_blocks(base)
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_blocks_with_o_list(self):
+        base = """\
+1. firstName: John,
+2.        "lastName": "Smith's",
+23423. "age": 25
+
+1.invalid list, lack white space after '1.'"""
+        expected = [
+            "1. firstName: John,",
+            '2.        "lastName": "Smith\'s",',
+            '23423. "age": 25',
+            "1.invalid list, lack white space after '1.'",
+        ]
+        result = markdown_to_blocks(base)
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_blocks_with_u_list_combined(self):
+        base = """\
+* first
+* second
+- first new list
+- second new list
+
+- third new list
+* single item on last list"""
+        expected = [
+            "* first\n* second",
+            "- first new list\n- second new list\n- third new list",
+            "* single item on last list",
+        ]
+        result = markdown_to_blocks(base)
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_blocks_with_quote(self):
+        base = """\
+> first
+> second
+> third"""
+        expected = [
+            "> first\n> second\n> third",
+        ]
+        result = markdown_to_blocks(base)
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_blocks_only_whitespaces(self):
+        base = """\
+                   
+
+"""
+        expected = []
+        result = markdown_to_blocks(base)
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_blocks_headers(self):
+        base = """\
+# h1
+## h2
+### h3
+#### h4
+##### h5
+###### h6
+####### normal paragraph for invalid head of 7 '#'
+
+"""
+        expected = [
+            "# h1",
+            "## h2",
+            "### h3",
+            "#### h4",
+            "##### h5",
+            "###### h6",
+            "####### normal paragraph for invalid head of 7 '#'",
+        ]
+        result = markdown_to_blocks(base)
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_blocks_paragraph(self):
+        base = """\
+this is a normal paragraph
+this is another paragraph
+this is the last paragraph
+
+"""
+        expected = [
+            "this is a normal paragraph",
+            "this is another paragraph",
+            "this is the last paragraph",
+        ]
+        result = markdown_to_blocks(base)
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_blocks_paragraph_with_trails(self):
+        base = """\
+              this is a normal paragraph with lots of whitesapce at start and end              """
+        expected = [
+            "this is a normal paragraph with lots of whitesapce at start and end",
+        ]
+        result = markdown_to_blocks(base)
+        self.assertEqual(result, expected)
 
 if __name__ == "__main__":
     unittest.main()
