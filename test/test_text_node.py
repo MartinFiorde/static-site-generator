@@ -2,6 +2,7 @@ import unittest
 import copy
 
 from src.models.text_node import TextNode, TextType
+from src.models.leaf_node import LeafNode
 
 
 class TestTextNode(unittest.TestCase):
@@ -67,6 +68,53 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(result.text, self.base_text_node.text)
         self.assertEqual(result.text_type, self.base_text_node.text_type)
         self.assertNotEqual(result.url, self.base_text_node.url)
+
+    def test_text_node_to_html_node_text(self):
+        expected = LeafNode(tag=None, value="Simple text without tag", props={})
+        result = TextNode(
+            "Simple text without tag", TextType.TEXT
+        ).text_node_to_html_node()
+        self.assertEqual(result, expected)
+        
+    def test_text_node_to_html_node_bold(self):
+        expected = LeafNode(tag="b", value="Bold text", props={})
+        result = TextNode("Bold text", TextType.BOLD).text_node_to_html_node()
+        self.assertEqual(result, expected)
+        
+    def test_text_node_to_html_node_italic(self):
+        expected = LeafNode(tag="i", value="Italic text", props={})
+        result = TextNode("Italic text", TextType.ITALIC).text_node_to_html_node()
+        self.assertEqual(result, expected)
+        
+    def test_text_node_to_html_node_code(self):
+        expected = LeafNode(tag="code", value="code example", props={})
+        result = TextNode("code example", TextType.CODE).text_node_to_html_node()
+        self.assertEqual(result, expected)
+        
+    def test_text_node_to_html_node_link(self):
+        expected = LeafNode(
+            tag="a", value="link to something", props={"href": "https://boot.dev"}
+        )
+        result = TextNode(
+            "link to something", TextType.LINK, "https://boot.dev"
+        ).text_node_to_html_node()
+        self.assertEqual(result, expected)
+        
+    def test_text_node_to_html_node_image(self):
+        expected = LeafNode(
+            tag="img",
+            value="",
+            props={
+                "src": "https://www.boot.dev/img/bootdev-logo-full-small.webp",
+                "alt": "Boot.dev",
+            },
+        )
+        result = TextNode(
+            "Boot.dev",
+            TextType.IMAGE,
+            "https://www.boot.dev/img/bootdev-logo-full-small.webp",
+        ).text_node_to_html_node()
+        self.assertEqual(result, expected)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,7 @@
 from enum import Enum
 
+from src.models.leaf_node import LeafNode
+
 
 class TextType(Enum):
     TEXT = "text"
@@ -24,6 +26,23 @@ class TextNode:
         self.text = text
         self.text_type = text_type
         self.url = url
+        
+    def text_node_to_html_node(text_node: 'TextNode') -> "LeafNode":
+        type: TextType = text_node.text_type
+        if type == TextType.TEXT:
+            return LeafNode(text_node.text)
+        elif type == TextType.BOLD:
+            return LeafNode(text_node.text, "b")
+        elif type == TextType.ITALIC:
+            return LeafNode(text_node.text, "i")
+        elif type == TextType.CODE:
+            return LeafNode(text_node.text, "code")
+        elif type == TextType.LINK:
+            return LeafNode(text_node.text, "a", {"href": text_node.url})
+        elif type == TextType.IMAGE:
+            return LeafNode("", "img", {"src": text_node.url, "alt": text_node.text})
+        else:
+            raise ValueError("TextNode must have a valid TextType")
 
     def __eq__(self, other) -> bool:
         if isinstance(other, TextNode):
