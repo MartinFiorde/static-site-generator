@@ -375,9 +375,7 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
 
 1.invalid list, lack white space after '1.'"""
         expected = [
-            "1. firstName: John,",
-            '2.        "lastName": "Smith\'s",',
-            '23423. "age": 25',
+            '1. firstName: John,\n2.        "lastName": "Smith\'s",\n23423. "age": 25',
             "1.invalid list, lack white space after '1.'",
         ]
         result = markdown_to_blocks(base)
@@ -466,6 +464,30 @@ this is the last paragraph
         ]
         result = markdown_to_blocks(base)
         self.assertEqual(result, expected)
+
+        # block_to_block_type() tests
+
+    def test_block_to_block_type(self):
+        base = [
+            "###### this is a heading",
+            "####### is a normal paragraph for invalid heading",
+            "> this is a quote",
+            "* list item\n* another item",
+            "1. first\n3. second\n4456. third\n",
+            "```\nthis is a code block\n```",
+        ]
+
+        result = []
+        for block in base:
+            result.append(block_to_block_type(block))
+
+        self.assertEqual(result[0], BlockType.HEADING)
+        self.assertEqual(result[1], BlockType.PARAGRAPH)
+        self.assertEqual(result[2], BlockType.QUOTE)
+        self.assertEqual(result[3], BlockType.U_LIST)
+        self.assertEqual(result[4], BlockType.O_LIST)
+        self.assertEqual(result[5], BlockType.BLOCK_CODE)
+
 
 if __name__ == "__main__":
     unittest.main()

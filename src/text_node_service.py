@@ -1,6 +1,6 @@
 import re
 
-from src.models.text_node import TextNode, TextType
+from src.models.text_node import TextNode, TextType, BlockType
 
 
 def nodify(text: str):
@@ -142,9 +142,14 @@ def markdown_to_blocks(markdown: str) -> list[str]:
             temp_flag = "- "
             temp_block.append(line)
             continue
-        
+
         if re.match(r"^\>\s", line):
             temp_flag = "> "
+            temp_block.append(line)
+            continue
+
+        if re.match(r"^\d+\.\s", line):
+            temp_flag = "1. "
             temp_block.append(line)
             continue
 
@@ -159,5 +164,26 @@ def markdown_to_blocks(markdown: str) -> list[str]:
         if temp_flag == "```":
             temp_block.append(temp_flag)
         nodes.append("\n".join(temp_block))
-    
+
     return nodes
+
+
+def block_to_block_type(block: str):
+    head = block.split("\n")[0]
+
+    if head == "```":
+        return BlockType.BLOCK_CODE
+
+    if re.match(r"^\d+\.\s", head):
+        return BlockType.O_LIST
+
+    if re.match(r"^\>\s", head):
+        return BlockType.QUOTE
+
+    if re.match(r"^\*\s", head) or re.match(r"^\-\s", head):
+        return BlockType.U_LIST
+
+    if re.match(r"^#{1,6} ", head):
+        return BlockType.HEADING
+
+    return BlockType.PARAGRAPH
