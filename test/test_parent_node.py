@@ -123,7 +123,7 @@ class TestParentNode(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_repr(self):
-        expected = "ParentNode(tag='p', value=None, children=[LeafNode(tag='b', value='Bold text', props={}), LeafNode(tag=None, value='Normal text', props={}), LeafNode(tag='i', value='italic text', props={}), LeafNode(tag=None, value='Normal text', props={})], props={'class': 'greeting', 'href': 'https://boot.dev'})"
+        expected = "ParentNode(tag='p', children=[LeafNode(tag='b', value='Bold text', props={}), LeafNode(tag=None, value='Normal text', props={}), LeafNode(tag='i', value='italic text', props={}), LeafNode(tag=None, value='Normal text', props={})], props={'class': 'greeting', 'href': 'https://boot.dev'})"
         result = repr(self.base_node)
         self.assertEqual(result, expected)
 

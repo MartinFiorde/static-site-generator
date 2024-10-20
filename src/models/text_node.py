@@ -22,12 +22,27 @@ class BlockType(Enum):
 
 
 class TextNode:
-    def __init__(self, text: str, text_type: TextType, url: str = None) -> None:
+    def __init__(self, text: str, text_type: str, url: str = None) -> None:
         self.text = text
-        self.text_type = text_type.value
+        self.text_type = self.validate_text_type(text_type)
         self.url = url
+
+    def validate_text_type(self, text_type: str):
+        # faster validation only if all Keys in enum match their value.upper() versions
+        try:
+            return TextType[text_type.upper()].value  # Convierte a mayúsculas y busca en el Enum
+        except KeyError:
+            raise ValueError(f"Invalid text_type: '{text_type}'. Allowed values are: {[t.name for t in TextType]}")
         
-    def text_node_to_html_node(text_node: 'TextNode') -> "LeafNode":
+        # slight slower validation if not all Keys in enum match their value.upper() versions
+        for t in TextType:
+            if t.value == text_type:
+                return t.value
+        raise ValueError(
+            f"Invalid text_type: '{text_type}'. Allowed values are: {[t.value for t in TextType]}"
+        )
+
+    def text_node_to_html_node(text_node: "TextNode") -> "LeafNode":
         type: TextType = text_node.text_type
         if type == TextType.TEXT.value:
             return LeafNode(text_node.text)

@@ -8,25 +8,25 @@ def nodify(text: str):
         raise TypeError("Parameter must be a valid string.")
     if text == "":
         return []
-    return [TextNode(text, TextType.TEXT)]
+    return [TextNode(text, "text")]
 
 
 def pick_delimiter(text_type):
-    if text_type == TextType.BOLD:
+    if text_type == TextType.BOLD.value:
         return "**"
-    if text_type == TextType.ITALIC:
+    if text_type == TextType.ITALIC.value:
         return "*"
-    if text_type == TextType.CODE:
+    if text_type == TextType.CODE.value:
         return "`"
     return None
 
 
-def split_nodes_delimiter(text: str, text_type: TextType) -> list[TextNode]:
+def split_nodes_delimiter(text: str, text_type: str) -> list[TextNode]:
     return split_nodes_delimiter(nodify(text), text_type)
 
 
 def split_nodes_delimiter(
-    old_nodes: list[TextNode], text_type: TextType
+    old_nodes: list[TextNode], text_type: str
 ) -> list[TextNode]:
     new_nodes = []
     for old_node in old_nodes:
@@ -43,23 +43,23 @@ def split_nodes_delimiter(
             if segment == "":
                 continue
             if segments.index(segment) % 2 == 0:
-                new_nodes.append(TextNode(segment, TextType.TEXT))
+                new_nodes.append(TextNode(segment, "text"))
             else:
                 new_nodes.append(TextNode(segment, text_type))
     return new_nodes
 
 
-def pattern_selector(text_type: TextType) -> str:
-    if text_type == TextType.LINK:
+def pattern_selector(text_type: str) -> str:
+    if text_type == TextType.LINK.value:
         return r"(\[.*?\]\(.*?\))"
-    elif text_type == TextType.IMAGE:
+    elif text_type == TextType.IMAGE.value:
         return r"(!\[.*?\]\(.*?\))"
     else:
         raise TypeError("TextType invalid.")
 
 
 def split_nodes_with_url(
-    old_nodes: list[TextNode], text_type: TextType
+    old_nodes: list[TextNode], text_type: str
 ) -> list[TextNode]:
     new_nodes = []
     for old_node in old_nodes:
@@ -78,7 +78,7 @@ def split_nodes_with_url(
             if segment == "":
                 continue
             if segments.index(segment) % 2 == 0:
-                new_nodes.append(TextNode(segment, TextType.TEXT))
+                new_nodes.append(TextNode(segment, "text"))
             else:
                 text = re.search(r"\[(.*?)\]", segment).group(1)
                 url = re.search(r"\((.*?)\)", segment).group(1)
@@ -88,11 +88,11 @@ def split_nodes_with_url(
 
 def text_to_textnodes(text: str) -> list[TextNode]:
     nodes = nodify(text)
-    nodes = split_nodes_delimiter(nodes, TextType.BOLD)
-    nodes = split_nodes_delimiter(nodes, TextType.ITALIC)
-    nodes = split_nodes_delimiter(nodes, TextType.CODE)
-    nodes = split_nodes_with_url(nodes, TextType.IMAGE)
-    nodes = split_nodes_with_url(nodes, TextType.LINK)
+    nodes = split_nodes_delimiter(nodes, TextType.BOLD.value)
+    nodes = split_nodes_delimiter(nodes, TextType.ITALIC.value)
+    nodes = split_nodes_delimiter(nodes, TextType.CODE.value)
+    nodes = split_nodes_with_url(nodes, TextType.IMAGE.value)
+    nodes = split_nodes_with_url(nodes, TextType.LINK.value)
     return nodes
 
 
