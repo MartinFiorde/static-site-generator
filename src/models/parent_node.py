@@ -14,8 +14,14 @@ class ParentNode(HTMLNode):
 
         full_node = f"{'    '*tab}<{self.tag}{self.props_to_html()}>"
         for item in self.children:
-            full_node += f"\n{item.to_html(tab + 1)}"
-        full_node += f"\n{'    '*tab}</{self.tag}>"
+            if self.tag == "pre":
+                full_node += f"{item.to_html(0)}"
+            else:
+                full_node += f"\n{item.to_html(tab + 1)}"
+        if self.tag == "pre":
+            full_node += f"{'    '*0}</{self.tag}>"
+        else:
+            full_node += f"\n{'    '*tab}</{self.tag}>"
         return full_node
 
     def __eq__(self, other):
