@@ -59,21 +59,20 @@ def generate_page(from_path: str, template_path: str, dest_path: str):
 
     content_as_md = ""
     with open(from_path, "r", encoding="utf-8") as file:
-        content_as_md = "\n".join(file.readlines())
+        content_as_md = "".join(file.readlines())
     title = extract_title(content_as_md)
     content_as_html = markdown_to_html_node(content_as_md).to_html()
     print()
-    print(content_as_html)
+    print(content_as_md)
+    print()
+    # print(content_as_html)
     print()
 
     file_content = ""
     with open(template_path, "r", encoding="utf-8") as file:
-        file_content = "\n".join(file.readlines())
+        file_content = "".join(file.readlines())
     file_content = file_content.replace(" {{ Title }} ", title, 1)
     file_content = file_content.replace("{{ Content }}", content_as_html, 1)
-    print()
-    print("title")
-    print(title)
 
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
     with open(dest_path, "w", encoding="utf-8") as file:
