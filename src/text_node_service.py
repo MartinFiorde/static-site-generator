@@ -30,7 +30,7 @@ def split_nodes_delimiter(
 ) -> list[TextNode]:
     new_nodes = []
     for old_node in old_nodes:
-        if old_node.text_type != TextType.TEXT:
+        if old_node.text_type != TextType.TEXT.value:
             new_nodes.append(old_node)
             continue
         delimiter = pick_delimiter(text_type)
@@ -63,7 +63,7 @@ def split_nodes_with_url(
 ) -> list[TextNode]:
     new_nodes = []
     for old_node in old_nodes:
-        if old_node.text_type != TextType.TEXT:
+        if old_node.text_type != TextType.TEXT.value:
             new_nodes.append(old_node)
             continue
         pattern = pattern_selector(text_type)

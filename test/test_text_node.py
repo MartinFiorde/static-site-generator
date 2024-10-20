@@ -12,7 +12,7 @@ class TestTextNode(unittest.TestCase):
     def test_values(self):
         result = self.base_text_node
         self.assertEqual(result.text, "base text")
-        self.assertEqual(result.text_type, TextType.ITALIC)
+        self.assertEqual(result.text_type, TextType.ITALIC.value)
         self.assertEqual(result.url, "base url")
 
     def test_eq(self):
@@ -25,12 +25,12 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(self.base_node_without_url, expected)
 
     def test_repr(self):
-        expected = "TextNode(text='This is a text node', text_type=<TextType.BOLD: 'bold'>, url=None)"
+        expected = "TextNode(text='This is a text node', text_type='bold', url=None)"
         result = repr(self.base_node_without_url)
         self.assertEqual(result, expected)
 
     def test_str(self):
-        expected = "<This is a text node - TextType.BOLD - None>"
+        expected = "<This is a text node - bold - None>"
         result = str(self.base_node_without_url)
         self.assertEqual(result, expected)
 

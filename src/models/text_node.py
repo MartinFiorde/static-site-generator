@@ -24,22 +24,22 @@ class BlockType(Enum):
 class TextNode:
     def __init__(self, text: str, text_type: TextType, url: str = None) -> None:
         self.text = text
-        self.text_type = text_type
+        self.text_type = text_type.value
         self.url = url
         
     def text_node_to_html_node(text_node: 'TextNode') -> "LeafNode":
         type: TextType = text_node.text_type
-        if type == TextType.TEXT:
+        if type == TextType.TEXT.value:
             return LeafNode(text_node.text)
-        elif type == TextType.BOLD:
+        elif type == TextType.BOLD.value:
             return LeafNode(text_node.text, "b")
-        elif type == TextType.ITALIC:
+        elif type == TextType.ITALIC.value:
             return LeafNode(text_node.text, "i")
-        elif type == TextType.CODE:
+        elif type == TextType.CODE.value:
             return LeafNode(text_node.text, "code")
-        elif type == TextType.LINK:
+        elif type == TextType.LINK.value:
             return LeafNode(text_node.text, "a", {"href": text_node.url})
-        elif type == TextType.IMAGE:
+        elif type == TextType.IMAGE.value:
             return LeafNode("", "img", {"src": text_node.url, "alt": text_node.text})
         else:
             raise ValueError("TextNode must have a valid TextType")
