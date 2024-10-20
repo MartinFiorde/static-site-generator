@@ -64,12 +64,13 @@ def generate_paragraph_node(line: str):
 
 
 def generate_quote_node(block: str):
-    lines = block
+    lines = block.split("\n")
     leaf_nodes = []
-    text_nodes = text_to_textnodes(lines[2:].strip())
-    internal_leaf_nodes = textnodes_to_leafnodes(text_nodes)
-    leaf_nodes.append(ParentNode("p", internal_leaf_nodes))
-    return ParentNode("blockquote", internal_leaf_nodes)
+    for line in lines:
+        text_nodes = text_to_textnodes(line[2:].strip())
+        internal_leaf_nodes = textnodes_to_leafnodes(text_nodes)
+        leaf_nodes.append(ParentNode("p", internal_leaf_nodes))
+    return ParentNode("blockquote", leaf_nodes)
 
 
 def generate_u_list_node(block: str):
