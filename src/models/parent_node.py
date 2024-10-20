@@ -12,16 +12,16 @@ class ParentNode(HTMLNode):
         if self.tag == None:
             raise ValueError("All parent nodes must have a tag")
 
-        full_node = f"{'    '*tab}<{self.tag}{self.props_to_html()}>"
+        full_node = f"{'    '*0}<{self.tag}{self.props_to_html()}>"
         for item in self.children:
             if self.tag == "pre":
                 full_node += f"{item.to_html(0)}"
             else:
-                full_node += f"\n{item.to_html(tab + 1)}"
+                full_node += f"{item.to_html(0)}"
         if self.tag == "pre":
             full_node += f"{'    '*0}</{self.tag}>"
         else:
-            full_node += f"\n{'    '*tab}</{self.tag}>"
+            full_node += f"{'    '*0}</{self.tag}>"
         return full_node
 
     def __eq__(self, other):
