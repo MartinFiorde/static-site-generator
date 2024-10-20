@@ -4,7 +4,7 @@ from src.models.text_node import TextNode, TextType, BlockType
 from src.models.parent_node import ParentNode
 from src.models.leaf_node import LeafNode
 
-from src.text_node_service import (
+from src.services.text_node_service import (
     text_to_textnodes,
     markdown_to_blocks,
     block_to_block_type,

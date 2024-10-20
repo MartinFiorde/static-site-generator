@@ -1,7 +1,7 @@
 import unittest
 
 from src.models.text_node import TextNode, TextType
-from src.text_node_service import *
+from src.services.text_node_service import *
 
 
 class TestTextNodeService(unittest.TestCase):
