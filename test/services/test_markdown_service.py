@@ -69,7 +69,7 @@ class TestMarkdownService(unittest.TestCase):
                     children=[
                         LeafNode(
                             tag="code",
-                            value="\ndef simple_block_code(example):\n    return example*2\n\n",
+                            value="def simple_block_code(example):\n    return example*2\n",
                             props={},
                         )
                     ],
@@ -120,10 +120,10 @@ class TestMarkdownService(unittest.TestCase):
             tag="div",
             children=[
                 ParentNode(
-                    tag="li",
+                    tag="ul",
                     children=[
                         ParentNode(
-                            tag="ul",
+                            tag="li",
                             children=[
                                 LeafNode(
                                     tag=None, value="first list first item", props={}
@@ -132,7 +132,7 @@ class TestMarkdownService(unittest.TestCase):
                             props={},
                         ),
                         ParentNode(
-                            tag="ul",
+                            tag="li",
                             children=[
                                 LeafNode(tag=None, value="first list 2° line", props={})
                             ],
@@ -142,10 +142,10 @@ class TestMarkdownService(unittest.TestCase):
                     props={},
                 ),
                 ParentNode(
-                    tag="li",
+                    tag="ul",
                     children=[
                         ParentNode(
-                            tag="ul",
+                            tag="li",
                             children=[
                                 LeafNode(tag=None, value="2° list first item", props={})
                             ],
@@ -166,15 +166,15 @@ class TestMarkdownService(unittest.TestCase):
             tag="div",
             children=[
                 ParentNode(
-                    tag="li",
+                    tag="ol",
                     children=[
                         ParentNode(
-                            tag="ol",
+                            tag="li",
                             children=[LeafNode(tag=None, value="first item", props={})],
                             props={},
                         ),
                         ParentNode(
-                            tag="ol",
+                            tag="li",
                             children=[
                                 LeafNode(tag=None, value="second item", props={})
                             ],

@@ -79,8 +79,8 @@ def generate_u_list_node(block: str):
     for line in lines:
         text_nodes = text_to_textnodes(line[2:].strip())
         internal_leaf_nodes = textnodes_to_leafnodes(text_nodes)
-        leaf_nodes.append(ParentNode("ul", internal_leaf_nodes))
-    return ParentNode("li", leaf_nodes)
+        leaf_nodes.append(ParentNode("li", internal_leaf_nodes))
+    return ParentNode("ul", leaf_nodes)
 
 
 def generate_o_list_node(block: str):
@@ -89,8 +89,8 @@ def generate_o_list_node(block: str):
     for line in lines:
         text_nodes = text_to_textnodes(line.split(".", 1)[1].strip())
         internal_leaf_nodes = textnodes_to_leafnodes(text_nodes)
-        leaf_nodes.append(ParentNode("ol", internal_leaf_nodes))
-    return ParentNode("li", leaf_nodes)
+        leaf_nodes.append(ParentNode("li", internal_leaf_nodes))
+    return ParentNode("ol", leaf_nodes)
 
 
 def textnodes_to_leafnodes(text_nodes: list[TextNode]) -> list[LeafNode]:
