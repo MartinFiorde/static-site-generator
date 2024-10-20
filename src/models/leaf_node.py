@@ -13,7 +13,7 @@ class LeafNode(HTMLNode):
             return f"{'    '*tab}{self.value}"
 
         return (
-            f"{'    '*tab}<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
+            f"{'    '*0}<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
         )
 
     def __eq__(self, other):
