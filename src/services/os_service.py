@@ -6,6 +6,7 @@ from src.services.markdown_service import markdown_to_html_node
 
 PUBLIC_PATH = "./public"
 STATIC_PATH = "./static"
+CONTENT_PATH = "./content"
 TEMPLATE_PATH = "./template.html"
 
 
@@ -27,15 +28,15 @@ def clean_public_dir(path=PUBLIC_PATH):
             raise e
 
 
-def copy_static_into_public_dir(origin=STATIC_PATH, destination=PUBLIC_PATH):
-    if not os.path.exists(origin):
-        if origin == STATIC_PATH:
+def copy_static_into_public_dir(from_path=STATIC_PATH, dest_path=PUBLIC_PATH):
+    if not os.path.exists(from_path):
+        if from_path == STATIC_PATH:
             return
         else:
             raise OSError("Referenced path not found.")
-    for item in os.listdir(origin):
-        origin_item_path = os.path.join(origin, item)
-        destination_item_path = os.path.join(destination, item)
+    for item in os.listdir(from_path):
+        origin_item_path = os.path.join(from_path, item)
+        destination_item_path = os.path.join(dest_path, item)
         try:
             if os.path.isfile(origin_item_path) or os.path.islink(origin_item_path):
                 shutil.copy(origin_item_path, destination_item_path)
@@ -54,7 +55,7 @@ def extract_title(text: str) -> str:
     raise Exception("Markdown document is invalid. H1 header not found.")
 
 
-def generate_page(from_path: str, template_path: str, dest_path: str):
+def generate_page(from_path, dest_path, template_path=TEMPLATE_PATH):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     content_as_md = ""
@@ -62,11 +63,6 @@ def generate_page(from_path: str, template_path: str, dest_path: str):
         content_as_md = "".join(file.readlines())
     title = extract_title(content_as_md)
     content_as_html = markdown_to_html_node(content_as_md).to_html()
-    print()
-    print(content_as_md)
-    print()
-    # print(content_as_html)
-    print()
 
     file_content = ""
     with open(template_path, "r", encoding="utf-8") as file:
@@ -77,3 +73,18 @@ def generate_page(from_path: str, template_path: str, dest_path: str):
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
     with open(dest_path, "w", encoding="utf-8") as file:
         file.write(file_content)
+
+
+def generate_pages_recursive(file_path=CONTENT_PATH, dest_path=PUBLIC_PATH):
+    for item in os.listdir(file_path):
+        origin_item_path = os.path.join(file_path, item)
+        try:
+            if os.path.isfile(origin_item_path):
+                file_name, extension = os.path.splitext(item)
+                if extension == ".md":
+                    generate_page(origin_item_path, f"{dest_path}/{file_name}.html")
+            elif os.path.isdir(origin_item_path):
+                destination_item_path = os.path.join(dest_path, item)
+                generate_pages_recursive(origin_item_path, destination_item_path)
+        except Exception as e:
+            raise e
