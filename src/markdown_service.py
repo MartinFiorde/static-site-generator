@@ -64,15 +64,33 @@ def generate_paragraph_node(line: str):
 
 
 def generate_quote_node(block: str):
-    pass
+    lines = block.split("\n")
+    leaf_nodes = []
+    for line in lines:
+        text_nodes = text_to_textnodes(line[2:].strip())
+        internal_leaf_nodes = textnodes_to_leafnodes(text_nodes)
+        leaf_nodes.append(ParentNode("p", internal_leaf_nodes))
+    return ParentNode("blockquote", leaf_nodes)
 
 
 def generate_u_list_node(block: str):
-    pass
+    lines = block.split("\n")
+    leaf_nodes = []
+    for line in lines:
+        text_nodes = text_to_textnodes(line[2:].strip())
+        internal_leaf_nodes = textnodes_to_leafnodes(text_nodes)
+        leaf_nodes.append(ParentNode("ul", internal_leaf_nodes))
+    return ParentNode("li", leaf_nodes)
 
 
 def generate_o_list_node(block: str):
-    pass
+    lines = block.split("\n")
+    leaf_nodes = []
+    for line in lines:
+        text_nodes = text_to_textnodes(line.split(".", 1)[1].strip())
+        internal_leaf_nodes = textnodes_to_leafnodes(text_nodes)
+        leaf_nodes.append(ParentNode("ol", internal_leaf_nodes))
+    return ParentNode("li", leaf_nodes)
 
 
 def textnodes_to_leafnodes(text_nodes: list[TextNode]) -> list[LeafNode]:

@@ -80,10 +80,114 @@ class TestMarkdownService(unittest.TestCase):
             props={},
         )
         result = markdown_to_html_node(base)
-        # print()
-        # print(repr(result))
-        # print()
-        # print(result.to_html())
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_html_node_simple_quote(self):
+        base = "> first **quote**\n> **quote** 2° line"
+        expected = ParentNode(
+            tag="div",
+            children=[
+                ParentNode(
+                    tag="blockquote",
+                    children=[
+                        ParentNode(
+                            tag="p",
+                            children=[
+                                LeafNode(tag=None, value="first ", props={}),
+                                LeafNode(tag="b", value="quote", props={}),
+                            ],
+                            props={},
+                        ),
+                        ParentNode(
+                            tag="p",
+                            children=[
+                                LeafNode(tag="b", value="quote", props={}),
+                                LeafNode(tag=None, value=" 2° line", props={}),
+                            ],
+                            props={},
+                        ),
+                    ],
+                    props={},
+                )
+            ],
+            props={},
+        )
+        result = markdown_to_html_node(base)
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_html_node_simple_u_list(self):
+        base = "* first list first item\n* first list 2° line\n- 2° list first item"
+        expected = ParentNode(
+            tag="div",
+            children=[
+                ParentNode(
+                    tag="li",
+                    children=[
+                        ParentNode(
+                            tag="ul",
+                            children=[
+                                LeafNode(
+                                    tag=None, value="first list first item", props={}
+                                )
+                            ],
+                            props={},
+                        ),
+                        ParentNode(
+                            tag="ul",
+                            children=[
+                                LeafNode(tag=None, value="first list 2° line", props={})
+                            ],
+                            props={},
+                        ),
+                    ],
+                    props={},
+                ),
+                ParentNode(
+                    tag="li",
+                    children=[
+                        ParentNode(
+                            tag="ul",
+                            children=[
+                                LeafNode(tag=None, value="2° list first item", props={})
+                            ],
+                            props={},
+                        )
+                    ],
+                    props={},
+                ),
+            ],
+            props={},
+        )
+        result = markdown_to_html_node(base)
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_html_node_simple_o_list(self):
+        base = "1. first item\n123. second item"
+        expected = ParentNode(
+            tag="div",
+            children=[
+                ParentNode(
+                    tag="li",
+                    children=[
+                        ParentNode(
+                            tag="ol",
+                            children=[LeafNode(tag=None, value="first item", props={})],
+                            props={},
+                        ),
+                        ParentNode(
+                            tag="ol",
+                            children=[
+                                LeafNode(tag=None, value="second item", props={})
+                            ],
+                            props={},
+                        ),
+                    ],
+                    props={},
+                )
+            ],
+            props={},
+        )
+        result = markdown_to_html_node(base)
         self.assertEqual(result, expected)
 
 
