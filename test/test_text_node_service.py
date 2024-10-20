@@ -275,6 +275,8 @@ class TestTextNodeService(unittest.TestCase):
                 "https://boot.dev",
             ),
         ]
+        result = text_to_textnodes(base)
+        self.assertEqual(result, expected)
 
     def test_text_to_textnodes_with_all_node_types_2(self):
         base = "This is a [link](https://boot.dev) with an *italic word* and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a `code block` and a **bold text**."

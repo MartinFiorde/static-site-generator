@@ -128,7 +128,7 @@ class TestParentNode(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_str(self):
-        expected = "<p - None>"
+        expected = "<p - None - childrens: 4 - props: 2 >"
         result = str(self.base_node)
         self.assertEqual(result, expected)
 
