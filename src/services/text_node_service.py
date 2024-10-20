@@ -129,7 +129,7 @@ def markdown_to_blocks(markdown: str) -> list[str]:
             temp_flag = None
             temp_block = []
 
-        if re.match(r"^#{1,6} ", line):
+        if re.match(r"^#{1,6}\s", line):
             nodes.append(line)
             continue
 

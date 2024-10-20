@@ -40,7 +40,7 @@ def generate_block_code_node(block: str):
     lines = block.split("\n")
     if len(lines) < 2:
         raise Exception("block should had at least 3 lines")
-    value = "\n" + "\n".join(lines[1:-1]) + "\n"
+    value ="\n".join(lines[1:-1])
     leaf_nodes = [LeafNode(tag="code", value=value)]
     return ParentNode("pre", leaf_nodes)
 

@@ -1,9 +1,12 @@
 import shutil
 import os
+import re
 
+from src.services.markdown_service import markdown_to_html_node
 
 PUBLIC_PATH = "./public"
 STATIC_PATH = "./static"
+TEMPLATE_PATH = "./template.html"
 
 
 def clean_public_dir(path=PUBLIC_PATH):
@@ -11,7 +14,7 @@ def clean_public_dir(path=PUBLIC_PATH):
         if path == PUBLIC_PATH:
             os.mkdir(path)
         else:
-            raise OSError("Referenced directory not found.")
+            raise OSError("Referenced path not found.")
     for item in os.listdir(path):
         item_path = os.path.join(path, item)
         try:
@@ -29,7 +32,7 @@ def copy_static_into_public_dir(origin=STATIC_PATH, destination=PUBLIC_PATH):
         if origin == STATIC_PATH:
             return
         else:
-            raise OSError("Referenced directory not found.")
+            raise OSError("Referenced path not found.")
     for item in os.listdir(origin):
         origin_item_path = os.path.join(origin, item)
         destination_item_path = os.path.join(destination, item)
@@ -41,3 +44,37 @@ def copy_static_into_public_dir(origin=STATIC_PATH, destination=PUBLIC_PATH):
                 copy_static_into_public_dir(origin_item_path, destination_item_path)
         except Exception as e:
             raise e
+
+
+def extract_title(text: str) -> str:
+    for line in text.split("\n"):
+        if re.match(r"^#\s", line.strip()):
+            pair = line.split(" ", 1)
+            return pair[1].strip()
+    raise Exception("Markdown document is invalid. H1 header not found.")
+
+
+def generate_page(from_path: str, template_path: str, dest_path: str):
+    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
+
+    content_as_md = ""
+    with open(from_path, "r", encoding="utf-8") as file:
+        content_as_md = "\n".join(file.readlines())
+    title = extract_title(content_as_md)
+    content_as_html = markdown_to_html_node(content_as_md).to_html()
+    print()
+    print(content_as_html)
+    print()
+
+    file_content = ""
+    with open(template_path, "r", encoding="utf-8") as file:
+        file_content = "\n".join(file.readlines())
+    file_content = file_content.replace(" {{ Title }} ", title, 1)
+    file_content = file_content.replace("{{ Content }}", content_as_html, 1)
+    print()
+    print("title")
+    print(title)
+
+    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+    with open(dest_path, "w", encoding="utf-8") as file:
+        file.write(file_content)
