@@ -39,7 +39,7 @@ def turn_block_into_node(block):
 def generate_block_code_node(block: str):
     lines = block.split("\n")
     if len(lines) < 2:
-        raise Exception("block should had at least 3 lines")
+        raise ValueError("block should had at least 3 lines")
     value ="\n".join(lines[1:-1])
     leaf_nodes = [LeafNode(tag="code", value=value)]
     return ParentNode("pre", leaf_nodes)
@@ -47,7 +47,7 @@ def generate_block_code_node(block: str):
 
 def generate_heading_node(line: str):
     if len(line.split("\n")) > 1:
-        raise Exception("block should be 1 single line")
+        raise ValueError("block should be 1 single line")
     pair = line.split(" ", 1)
     tag = f"h{pair[0].count('#')}"
     text_nodes = text_to_textnodes(pair[1].strip())
@@ -57,7 +57,7 @@ def generate_heading_node(line: str):
 
 def generate_paragraph_node(line: str):
     if len(line.split("\n")) > 1:
-        raise Exception("block should be 1 single line")
+        raise ValueError("block should be 1 single line")
     text_nodes = text_to_textnodes(line)
     leaf_nodes = textnodes_to_leafnodes(text_nodes)
     return ParentNode("p", leaf_nodes)
