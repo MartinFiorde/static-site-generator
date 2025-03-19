@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD040 -->
 # Why Glorfindel is More Impressive than Legolas
 
 [< Back Home](/)
