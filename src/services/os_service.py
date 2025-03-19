@@ -10,14 +10,14 @@ CONTENT_PATH = "./content"
 TEMPLATE_PATH = "./template.html"
 
 
-def clean_public_dir(path=DEST_PATH):
-    if not os.path.exists(path):
-        if path == DEST_PATH:
-            os.mkdir(path)
+def clean_public_dir(dest_path=DEST_PATH):
+    if not os.path.exists(dest_path):
+        if dest_path == DEST_PATH:
+            os.mkdir(dest_path)
         else:
             raise OSError("Referenced path not found.")
-    for item in os.listdir(path):
-        item_path = os.path.join(path, item)
+    for item in os.listdir(dest_path):
+        item_path = os.path.join(dest_path, item)
         try:
             if os.path.isfile(item_path) or os.path.islink(item_path):
                 os.unlink(item_path)
